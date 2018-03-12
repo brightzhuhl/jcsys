@@ -1,5 +1,7 @@
+
 <template>
   <form role="form">
+
     <div class="from-group top20">
       <input type="checkbox" true-value="true" false-value="false" v-model="autoCompute">自动分配
     </div>
@@ -19,9 +21,9 @@
       <label>{{unit.name}}</label>
       <div class="row">
         <div class="col-md-4">
-          <input type="number" v-model.number="unit.taskNum" class="form-control" placeholder="任务数量">
+          <input v-model="unit.taskNum" class="form-control" placeholder="任务数量">
         </div>
-        <div class="col-md-8">
+        <div class="col-md-3">
           详细分配 &nbsp;
           <i v-if="unit.showDetail" class="glyphicon glyphicon-tasks" @click.stop="switchDetail(unit)" style="color:red"></i>
           <i v-if="!unit.showDetail" class="glyphicon glyphicon-tasks" @click.stop="switchDetail(unit)"></i>
@@ -30,9 +32,9 @@
       <div v-if="unit.showDetail" class="from-group">
         <div v-for="subTask in unit.subTasks" class="row top20">
           <div class="col-md-3 col-md-offset-1">{{subTask.comCategoryName}}</div>
-          <div class="col-md-2"><input type="number" class="form-control"  v-model.number="subTask.num"></div>
+          <div class="col-md-2"><input type="number" class="form-control" v-model="subTask.num"></div>
           <div class="col-md-1">或</div>
-          <div class="col-md-2"><input type="number" class="form-control"  v-model.number="subTask.percent"></div>
+          <div class="col-md-2"><input type="number" class="form-control"  v-model="subTask.percent"></div>
           <div class="col-md-1">%</div>
         </div>
       </div>
@@ -56,6 +58,13 @@
       return {autoCompute:'true'}
     }
     ,methods:{
+      validateDetail(unit,e){
+        console.log(e)
+      },
+      validateSum(e){
+        console.log('123445')
+      },
+      //切换详细分配项隐藏或显示
       switchDetail(unit){
         this.$set(unit,'showDetail',!unit.showDetail);
       },

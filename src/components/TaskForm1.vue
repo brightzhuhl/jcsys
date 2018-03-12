@@ -70,11 +70,34 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             <button type="button" @click="selectUnit" class="btn btn-primary">上一步</button>
-            <button type="button" class="btn btn-primary">确认</button>
+            <button type="button" class="btn btn-primary" @click="submitTask">确认</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <div class="modal fade" tabindex="1" id="taskListModal" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">分配任务·提交</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row top20">
+              <div class="col-md-2">任务描述:</div>
+              <div class="col-md-">任务描述:</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" @click="selectUnit" class="btn btn-primary">上一步</button>
+            <button type="button" class="btn btn-primary">提交</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
   </div>
 </template>
 
@@ -100,6 +123,19 @@
     },
     components:{TaskForm2,Tree,ProductCategoryTree},
     methods:{
+      afterLogin(callback){
+        window.onmessage = function(e){
+          var token = e.data
+          if(token == null){
+            layer.msg('登录已失效 请重新登录')
+            return
+          }
+          if(callback){
+            callback(token)
+          }
+        }
+        parent.postMessage('getToken','http://localhost:8080')
+      },
       selectUnit(){
         $('#selectUnitModal').mymodal();
         $('#allotTaskModal').modal('hide');
@@ -140,6 +176,63 @@
         $('#selectUnitModal').modal('hide')
         $('#allotTaskModal').mymodal();
       }
+      ,copySimpleValue(src,dst){
+        for(var i in src){
+          var propType = typeof src[i]
+          if(dst[i]){
+            continue
+          }
+          if(propType === 'string' || propType === 'number'){
+            dst[i] = src[i]
+          }
+        }
+      }
+      ,submitTask(){
+        var parentTask = {}
+        var taskTree =  this.taskTree
+        this.copySimpleValue(taskTree,parentTask)
+
+        var submitSubTasks = []
+        var units = taskTree.units
+        for(var i in units){
+          var subTasks = units[i].subTasks
+          if(units[i].showDetail){
+            for(var j in subTasks){
+              var subTask = {}
+              this.copySimpleValue(parentTask,subTask)
+              this.copySimpleValue(subTask[i],subTask)
+              submitSubTasks.push(subTask)
+            }
+          }else{
+            var subTask = {}
+            this.copySimpleValue(units[i],subTask)
+            this.copySimpleValue(parentTask,subTask)
+            submitSubTasks.push(subTask)
+          }
+        }
+
+        this.afterLogin(function(token){
+          var loadingLayer = layer.load(1,{
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+          })
+
+          $.ajax({
+            url:'http://localhost:8080/jcsys/app/task/create',
+            type:'POST',
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader("authorization", token);
+            },
+            data:{params:JSON.stringify({parent:parentTask,subTasks:submitSubTasks})},
+            success(result){
+              layer.close(loadingLayer)
+              layer.msg(result.msg)
+            },
+            error(e){
+              layer.close(loadingLayer)
+            }
+          })
+        })
+      }
       ,getOrgOfCode(li,code){
         for(var i in li){
           if(li[i].code == code){
@@ -167,11 +260,17 @@
     watch:{
 
     },mounted:function(){
+
       this.loadTaskTree();
+      //加载产品分类
       this.loadProductCategoryTree();
+      //加载组织架构
       this.loadOrgTree();
+      //加载企业分类
       this.loadComCategories();
       var vthis = this;
+
+      //初始化日期插件
       $('#startDateIn').datetimepicker({
         format: 'yyyy-mm-dd'
         ,minView:2

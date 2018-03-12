@@ -5,6 +5,8 @@ import App from './App'
 import $ from 'jquery'
 import './assets/bootstrap/js/bootstrap.min.js'
 import './assets/bootstrap/css/bootstrap.min.css'
+import './assets/layer/theme/default/layer.css'
+import './assets/layer/layer.js'
 import './assets/my-modal.js'
 import './assets/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css'
 import './assets/bootstrap-datepicker/js/bootstrap-datetimepicker.min.js'
@@ -19,4 +21,4 @@ new Vue({
   template: '<App :appData="appData"/>',
   data:{appData:{description:'普通任务',type:'cy'}}
 })
-window.Vue = Vue;
+window.Vue = Vue

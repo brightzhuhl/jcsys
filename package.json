@@ -12,6 +12,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "jquery": "^1.12.4",
+    "jsonwebtoken": "^8.2.0",
     "vue": "^2.5.2"
   },
   "devDependencies": {

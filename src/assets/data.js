@@ -45,7 +45,13 @@ var category = [{
   children: []
 }]
 
-var orgTree = category;
+var orgTree = [{
+  'name':'集美区农业局',
+  'code':'0001.0001.'
+},{
+  'name':'思明区农业局',
+  'code':'0001.0002.'
+}];
 
 var comCategories = [{
   name: '工厂',
