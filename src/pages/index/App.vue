@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import TaskForm1 from './components/TaskForm1'
+import TaskForm1 from '../../components/TaskForm1'
 
 export default {
   name: 'App',
