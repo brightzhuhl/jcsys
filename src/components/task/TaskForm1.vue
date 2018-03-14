@@ -102,7 +102,7 @@
 </template>
 
 <script>
-  import {taskTree,category,comCategories,orgTree} from '../assets/data.js'
+  import {taskTree,category,comCategories,orgTree} from '../../assets/data.js'
   import TaskForm2 from './TaskForm2.vue'
   import Tree from './Tree.vue'
   import ProductCategoryTree from './ProductCategoryTree.vue'
