@@ -123,19 +123,6 @@
     },
     components:{TaskForm2,Tree,ProductCategoryTree},
     methods:{
-      afterLogin(callback){
-        window.onmessage = function(e){
-          var token = e.data
-          if(token == null){
-            layer.msg('登录已失效 请重新登录')
-            return
-          }
-          if(callback){
-            callback(token)
-          }
-        }
-        parent.postMessage('getToken','http://localhost:8080')
-      },
       selectUnit(){
         $('#selectUnitModal').mymodal();
         $('#allotTaskModal').modal('hide');
@@ -164,11 +151,11 @@
             q.addAll(org.children);
           }
           if(org.checked){
-            var exists = this.getOrgOfCode(units,org.code);
+            var exists = this.getOrgOfCode(units,org.id);
             if(exists){
               tempOrgLi.push(exists)
             }else{
-              tempOrgLi.push({name:org.name,code:org.code,taskNum:0,subTasks:[]})
+              tempOrgLi.push({name:org.text,id:org.id,taskNum:0,subTasks:[]})
             }
           }
         }
@@ -195,47 +182,38 @@
         var submitSubTasks = []
         var units = taskTree.units
         for(var i in units){
+          units[i].targetOrg = units[i].id
           var subTasks = units[i].subTasks
           if(units[i].showDetail){
             for(var j in subTasks){
               var subTask = {}
               this.copySimpleValue(parentTask,subTask)
               this.copySimpleValue(subTask[i],subTask)
+              delete subTask.id
               submitSubTasks.push(subTask)
             }
           }else{
             var subTask = {}
             this.copySimpleValue(units[i],subTask)
             this.copySimpleValue(parentTask,subTask)
+            delete subTask.id
             submitSubTasks.push(subTask)
           }
         }
-
-        this.afterLogin(function(token){
-          var loadingLayer = layer.load(1,{
-            shade: [0.1,'#fff'] //0.1透明度的白色背景
-          })
-
-          $.ajax({
-            url:'http://localhost:8080/jcsys/app/task/create',
-            type:'POST',
-            beforeSend: function(xhr) {
-              xhr.setRequestHeader("authorization", token);
-            },
-            data:{params:JSON.stringify({parent:parentTask,subTasks:submitSubTasks})},
-            success(result){
-              layer.close(loadingLayer)
-              layer.msg(result.msg)
-            },
-            error(e){
-              layer.close(loadingLayer)
-            }
-          })
+        var loadingLayer = layer.load(1,{
+          shade: [0.1,'#fff'] //0.1透明度的白色背景
         })
+        window.loginedPost(
+          'http://localhost:8080/jcsys/app/task/create'
+          ,{params:JSON.stringify({parent:parentTask,subTasks:submitSubTasks})}
+          ,function(result){
+            layer.close(loadingLayer)
+            layer.msg(result.msg)
+          })
       }
-      ,getOrgOfCode(li,code){
+      ,getOrgOfCode(li,id){
         for(var i in li){
-          if(li[i].code == code){
+          if(li[i].id == id){
             return li[i];
           }
         }
@@ -245,16 +223,31 @@
         this.initialized++;
       }
       ,loadProductCategoryTree(){
-        this.productCategoryTree = category;
-        this.initialized++;
+        var vthis = this
+        window.loginedPost('http://localhost:8080/jcsys/product/category/list',{}
+          ,function(result){
+              vthis.productCategoryTree = result;
+              vthis.initialized++;
+          }
+        )
       }
       ,loadOrgTree(){
-        this.orgTree = orgTree;
-        this.initialized++;
+        var vthis = this
+        window.loginedPost('http://localhost:8080/jcsys/orgstruct/tree',{onlyUnit:true}
+          ,function(result){
+              vthis.orgTree = result;
+              vthis.initialized++;
+          }
+        )
       }
       ,loadComCategories(){
-        this.comCategories = comCategories;
-        this.initialized++;
+        var vthis = this
+        window.loginedPost('http://localhost:8080/jcsys/company/category/datagrid',{}
+          ,function(result){
+              vthis.comCategories = result;
+              vthis.initialized++;
+          }
+        )
       }
     },
     watch:{

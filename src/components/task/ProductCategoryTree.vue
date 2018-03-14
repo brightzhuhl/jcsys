@@ -56,7 +56,7 @@
       getChildrenByCode(code,li){
         for(var i in li){
           if(li[i].code === code){
-            return li[i].children
+            return li[i].subCategory
           }
         }
         return []

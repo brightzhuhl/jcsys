@@ -14,7 +14,7 @@
             <input type="checkbox" name="treeNodeCheck" @click.stop="switchChecked(node)" :value="node.checked"  style="zoom:120%">
           </div>
           <div class="col-md-10 vertical-middle">
-            <div >{{node.name}}</div>
+            <div >{{node.text}}</div>
           </div>
         </div>
 
