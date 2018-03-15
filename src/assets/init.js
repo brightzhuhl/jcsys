@@ -60,7 +60,8 @@
         url:myUrl,
         type:'POST',
         headers:{
-          authorization:token
+          authorization:token,
+          'X-Requested-With':'XMLHttpRequest'
         },
         data:data,
         success:function(result){
