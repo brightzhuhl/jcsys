@@ -235,7 +235,7 @@
         var vthis = this
         window.loginedPost('http://localhost:8080/jcsys/orgstruct/tree',{onlyUnit:true}
           ,function(result){
-              vthis.orgTree = result;
+              vthis.orgTree = result[0].children;
               vthis.initialized++;
           }
         )
