@@ -41,7 +41,9 @@
         this.currentSelected.selected = ''
         this.$set(item,'selected','selected')
         this.currentSelected = item
+        var showShop = item.comType === '农贸市场'
         this.$emit('input',item.value)
+        this.$emit('updateShop',showShop)
       },
       loadData(){
         var searchParam = {}
@@ -52,7 +54,7 @@
           function(result){
             var items = [],coms = result.rows
             for(var i in coms){
-              items.push({text:coms[i].comName,value:coms[i].comId})
+              items.push({text:coms[i].comName,value:coms[i].comId,comType:coms[i].etc.comType})
             }
             vthis.items = items
             console.log(items)

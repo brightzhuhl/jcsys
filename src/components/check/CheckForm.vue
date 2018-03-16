@@ -70,6 +70,12 @@
           <div class="col-md-3 col-md-offset-2">
             <SearchPanel v-model="taskItem.comId"></SearchPanel>
           </div>
+          <div class="col-md-2" v-if="taskItem.showShop">
+            <select class="form-control" v-model="taskItem.shopId">
+              <option value="" disabled selected>请选择摊位</option>
+              <option v-for="shop in taskItem.shops" :value="shop.shopId">{{shop.code}}.{{shop.owner}}</option>
+            </select>
+          </div>
           <div class="col-md-3">
             <MultiSelect :usersData="users" v-model="taskItem.userIds"></MultiSelect>
           </div>
@@ -138,6 +144,12 @@
       addTaskItem(){
         this.taskItems.push({comId:'', userIds:[]})
       },
+      onShowShop(showShop,taskItem){
+        taskItem.showShop = showShop
+        window.loginedPost('http://localhost:8080/jcsys/fmshop/list',{fmId:taskItem.comId},function(result){
+          taskItem.shops = result
+        })
+      },
       reduceTaskItem(index){
         this.taskItems.splice(index,1)
       },
@@ -148,6 +160,7 @@
           var submitTask = {}
           $.extend(submitTask,taskItems[i],this.checkTask)
           submitTasks.push(submitTask)
+          delete submitTask.shops
         }
         var submitData = {parentId:this.parent.taskId,subTaskStr:JSON.stringify(submitTasks)}
         window.loginedPost('http://localhost:8080/jcsys/app/task/allot/check',submitData,function(result){

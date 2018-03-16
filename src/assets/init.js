@@ -43,7 +43,7 @@
       if(!requestToken){
         requestToken = true
         parent.postMessage('getToken','http://localhost:8080')
-      /*  window.postMessage({type:'setToken',data:'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjE1NDI1NDQsInVzZXJjb2RlIjoiYWRtaW4iLCJwYXNzd29yZCI6IjEiLCJzZXRrZXkiOiJrZXkwIn0.T_3FY461CwAS_-fZveh7ldxaI0MrIemWv8DOTGHoWpc'},
+        /*window.postMessage({type:'setToken',data:'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjE1NDI1NDQsInVzZXJjb2RlIjoiYWRtaW4iLCJwYXNzd29yZCI6IjEiLCJzZXRrZXkiOiJrZXkwIn0.T_3FY461CwAS_-fZveh7ldxaI0MrIemWv8DOTGHoWpc'},
           'http://localhost:8081')*/
       }
 
