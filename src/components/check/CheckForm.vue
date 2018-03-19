@@ -164,7 +164,9 @@
         }
         var submitData = {parentId:this.parent.taskId,subTaskStr:JSON.stringify(submitTasks)}
         window.loginedPost('http://localhost:8080/jcsys/app/task/allot/check',submitData,function(result){
-          layer.msg(result.msg)
+          layer.msg(result.msg,function(){
+            window.parentDo('closeCurrent')
+          })
         })
       }
     }

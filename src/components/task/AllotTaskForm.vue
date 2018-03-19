@@ -38,7 +38,7 @@
         var vthis = this
         var parentTaskId = this.requestParams['taskId']
         if(parentTaskId == null){
-          layer.msg('没有任务数据,3s后关闭本页面')
+          layer.msg('没有任务数据')
           return
         }
         window.loginedPost('http://localhost:8080/jcsys/app/task/detail',{taskId:parentTaskId},function(result){
@@ -77,7 +77,9 @@
         }
         var submitData = {parentId:this.parent.taskId,subTaskStr:JSON.stringify(submitTasks)}
         window.loginedPost('http://localhost:8080/jcsys/app/task/allot',submitData,function(result){
-          layer.msg(result.msg)
+          layer.msg(result.msg,function(){
+            window.parentDo('allotTaskSuccess')
+          })
         })
       }
     },

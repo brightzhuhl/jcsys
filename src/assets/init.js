@@ -16,15 +16,7 @@
   const callbacks = []
   const tokenKey = 'jcsysLoginToken'
   var oldOnmessage = window.onmessage
-  window.onmessage = function(e){
-    var data = e.data;
-    if(data.type != 'setToken'){
-      if(oldOnmessage){
-        oldOnmessage(e)
-      }
-      return
-    }
-    var token = data.data
+  function doAfterLogin(token){
     if(token == null){
       layer.msg('登录已失效 请重新登录')
       return
@@ -33,8 +25,21 @@
     while(callbacks.length>0){
       doCallback(callbacks.pop(),token)
     }
-
   }
+  window.onmessage = function(e){
+    var data = e.data;
+    if(data.type == 'setToken'){
+      doAfterLogin(data.data)
+    }
+    if(oldOnmessage){
+      oldOnmessage(e)
+    }
+    return
+  }
+  window.parentDo = function(method){
+    parent.postMessage(method,'http://localhost:8080')
+  }
+
   window.afterLogin = function(callback){
     var token = localStorage.getItem(tokenKey);
     if(token == null){
@@ -42,8 +47,8 @@
 
       if(!requestToken){
         requestToken = true
-        parent.postMessage('getToken','http://localhost:8080')
-        /*window.postMessage({type:'setToken',data:'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjE1NDI1NDQsInVzZXJjb2RlIjoiYWRtaW4iLCJwYXNzd29yZCI6IjEiLCJzZXRrZXkiOiJrZXkwIn0.T_3FY461CwAS_-fZveh7ldxaI0MrIemWv8DOTGHoWpc'},
+        window.parentDo('getToken')
+      /*  window.postMessage({type:'setToken',data:'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjE1NDI1NDQsInVzZXJjb2RlIjoiYWRtaW4iLCJwYXNzd29yZCI6IjEiLCJzZXRrZXkiOiJrZXkwIn0.T_3FY461CwAS_-fZveh7ldxaI0MrIemWv8DOTGHoWpc'},
           'http://localhost:8081')*/
       }
 

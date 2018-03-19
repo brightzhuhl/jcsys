@@ -114,7 +114,7 @@
           description:'',
           taskNum:0,
           type:'splt',
-          checkCategory:'0001.0001.0002.',
+          checkCategory:'',
           startDate:'',
           endDate:'',
           units:[],
@@ -186,11 +186,14 @@
           var subTasks = units[i].subTasks
           if(units[i].showDetail){
             for(var j in subTasks){
-              var subTask = {}
-              this.copySimpleValue(parentTask,subTask)
-              this.copySimpleValue(subTask[i],subTask)
-              delete subTask.id
-              submitSubTasks.push(subTask)
+              if(subTasks[j].taskNum > 0){
+                var subTask = {}
+                this.copySimpleValue(subTasks[j],subTask)
+                this.copySimpleValue(parentTask,subTask)
+                subTask.targetOrg = units[i].targetOrg
+                submitSubTasks.push(subTask)
+              }
+
             }
           }else{
             var subTask = {}
@@ -208,7 +211,11 @@
           ,{params:JSON.stringify({parent:parentTask,subTasks:submitSubTasks})}
           ,function(result){
             layer.close(loadingLayer)
-            layer.msg(result.msg)
+            layer.msg(result.msg,function(){
+              if(result.success){
+                window.location.reload()
+              }
+            })
           })
       }
       ,getOrgOfCode(li,id){
@@ -273,6 +280,8 @@
         $("#endDateIn").datetimepicker('setStartDate', e.date);
         vthis.taskTree.startDate = $('#startDateIn').val();
       })
+
+      $('#startDateIn').datetimepicker('setStartDate',new Date())
       $('#endDateIn').datetimepicker({
         format: 'yyyy-mm-dd'
         ,minView:2

@@ -1,7 +1,6 @@
 
 <template>
   <form role="form">
-
     <div class="from-group top20">
       <input type="checkbox" true-value="true" false-value="false" v-model="autoCompute">自动分配
     </div>
@@ -9,7 +8,7 @@
       <label>任务数量</label>
       <div class="row">
         <div class="col-md-4">
-          <input type="text"  v-model="taskTree.taskNum" class="form-control">
+          <input type="text"  v-model.number="taskTree.taskNum" class="form-control">
         </div>
         <div class="col-md-4">
           <label>未分配:{{remainTask}}</label>
@@ -32,9 +31,11 @@
       <div v-if="unit.showDetail" class="from-group">
         <div v-for="subTask in unit.subTasks" class="row top20">
           <div class="col-md-3 col-md-offset-1">{{subTask.comCategoryName}}</div>
-          <div class="col-md-2"><input type="number" class="form-control" v-model="subTask.num"></div>
+          <div class="col-md-2"><input class="form-control" :value="subTask.taskNum"
+                                       @input="inputTaskNum(subTask,unit.taskNum,$event)" @keyup="nonNumericFilter($event)"></div>
           <div class="col-md-1">或</div>
-          <div class="col-md-2"><input type="number" class="form-control"  v-model="subTask.percent"></div>
+          <div class="col-md-2"><input class="form-control"  :value="subTask.percent"
+                                       @input="inputTaskPercent(subTask,unit.taskNum,$event)" @keyup="nonNumericFilter($event)"></div>
           <div class="col-md-1">%</div>
         </div>
       </div>
@@ -62,7 +63,27 @@
         console.log(e)
       },
       validateSum(e){
-        console.log('123445')
+        console.log(e)
+      },
+      nonNumericFilter(e){
+        var e = e || window.event || arguments.callee.caller.arguments[0];
+        var val = e.target.value
+        e.target.value = val.replace(/^0$/,'').replace(/[^\d]/g,'')
+      },
+      inputTaskNum(subTask,sum,e){
+        var reg = /^[1-9]\d*$/
+        var val = e.target.value
+        if(reg.test(e.target.value)){
+          var  intVal = parseInt(val)
+          subTask.percent = intVal * 100 / sum
+          subTask.taskNum = intVal
+          return true
+        }else{
+          return false
+        }
+      },
+      inputTaskPercent(subTask,sum,e){
+
       },
       //切换详细分配项隐藏或显示
       switchDetail(unit){
@@ -90,7 +111,7 @@
           for(var j in categories){
             var task = this.getTaskOfCode(subTasks,categories[j].code);
             if(task == null){
-              task = {num:0,percent:0}
+              task = {taskNum:0,percent:0}
             }
             task.comCategory=categories[j].code;
             task.comCategoryName = categories[j].name;
