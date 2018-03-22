@@ -48,7 +48,7 @@
       if(!requestToken){
         requestToken = true
         window.parentDo('getToken')
-      /*  window.postMessage({type:'setToken',data:'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjE1NDI1NDQsInVzZXJjb2RlIjoiYWRtaW4iLCJwYXNzd29yZCI6IjEiLCJzZXRrZXkiOiJrZXkwIn0.T_3FY461CwAS_-fZveh7ldxaI0MrIemWv8DOTGHoWpc'},
+        /*window.postMessage({type:'setToken',data:'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjIyMDIxNzQsInVzZXJjb2RlIjoiYWRtaW4iLCJwYXNzd29yZCI6IjEiLCJzZXRrZXkiOiJrZXkwIn0.iscDfAQofA9Xf8F0sC07gR1Vh-HYc9HMK4Rc3Oxgr0U'},
           'http://localhost:8081')*/
       }
 

@@ -1,16 +1,16 @@
 <template>
   <div id="app" class="bbb">
-    <TaskForm1></TaskForm1>
+    <TaskPanel></TaskPanel>
   </div>
 </template>
 
 <script>
-import TaskForm1 from '../../components/task/TaskForm1'
+import TaskPanel from '../../components/task/TaskPanel'
 
 export default {
   name: 'App',
   components: {
-    TaskForm1
+    TaskPanel
   }
 }
 </script>

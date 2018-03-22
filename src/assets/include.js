@@ -12,3 +12,5 @@ import './bootstrap-datepicker/js/bootstrap-datetimepicker.min.js'
 import './bootstrap-datepicker/js/locales/bootstrap-datetimepicker.zh-CN.js'
 import './init'
 import './req-param-util'
+import './common.css'
+
